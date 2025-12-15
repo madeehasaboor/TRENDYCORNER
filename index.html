@@ -54,8 +54,9 @@
         .slideshow-container {
             position: relative;
             width: 100%;
-            height: 80vh;
-            min-height: 600px;
+            height: 90vh;
+            min-height: 520px;
+            max-height: 960px;
             overflow: hidden;
         }
         
@@ -64,6 +65,7 @@
             width: 100%;
             height: 100%;
             position: relative;
+            background: #0f172a;
         }
         
         .slide.active {
@@ -74,7 +76,9 @@
         .slide img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            object-position: center;
+            background: #0f172a;
         }
         
         .slide-content {
@@ -187,37 +191,61 @@
             }
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .slideshow-container {
-                height: 60vh;
-                min-height: 400px;
+                height: 78vh;
+                min-height: 480px;
             }
             
             .slide-content {
-                padding: 2rem;
-                width: 90%;
+                padding: 2.25rem;
+                width: min(90%, 640px);
             }
             
             .slide-content h2 {
-                font-size: 2rem;
+                font-size: 2.75rem;
             }
             
             .slide-content p {
-                font-size: 1rem;
+                font-size: 1.15rem;
+            }
+        }
+        
+        @media (max-width: 640px) {
+            .slideshow-container {
+                height: 65vh;
+                min-height: 380px;
+            }
+            
+            .slide-content {
+                padding: 1.5rem;
+                width: 92%;
+            }
+            
+            .slide-content h2 {
+                font-size: 1.75rem;
+            }
+            
+            .slide-content p {
+                font-size: 0.95rem;
+            }
+            
+            .slide-content a {
+                padding: 0.85rem 1.75rem;
             }
             
             .slideshow-nav {
-                width: 40px;
-                height: 40px;
-                font-size: 1.2rem;
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
             }
             
             .slideshow-nav.prev {
-                left: 15px;
+                left: 12px;
             }
             
             .slideshow-nav.next {
-                right: 15px;
+                right: 12px;
             }
         }
     </style>
@@ -228,7 +256,8 @@
         <nav class="container mx-auto px-6 py-4">
             <div class="flex items-center justify-between">
                 <!-- Logo -->
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center space-x-3">
+                    <img src="logo.png" alt="Trendy Corner logo" class="h-10 w-10 object-contain">
                     <h1 class="font-elegant text-3xl font-bold text-black">Trendy Corner</h1>
                 </div>
                 
@@ -274,24 +303,97 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
-    <section id="home" class="relative bg-white py-20 md:py-32">
-        <div class="container mx-auto px-6">
-            <div class="max-w-4xl mx-auto text-center">
-                <h2 class="font-elegant text-5xl md:text-7xl font-bold text-black mb-6 leading-tight">
-                    Elegance Redefined
-                </h2>
-                <p class="text-xl md:text-2xl text-gray-700 mb-8 font-light">
-                    Discover timeless fashion pieces that define your unique style
-                </p>
-                <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                    <a href="#products" class="bg-black text-white px-8 py-4 font-semibold hover:bg-gray-800 transition-colors duration-300">
-                        Shop Now
-                    </a>
-                    <a href="#collections" class="border-2 border-black text-black px-8 py-4 font-semibold hover:bg-black hover:text-white transition-all duration-300">
-                        View Collections
-                    </a>
+    <!-- Hero Slideshow -->
+    <section id="home" class="relative">
+        <div class="slideshow-container">
+            <button class="slideshow-nav prev" onclick="changeSlide(-1)">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="slideshow-nav next" onclick="changeSlide(1)">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+
+            <div class="slide active">
+                <img src="Slides show/41f4a5c3-2dc1-462c-8b83-9a7e9ce64777.jpeg" alt="Elegant runway look">
+                <div class="slide-content">
+                    <h2>Elegance Redefined</h2>
+                    <p>Discover timeless fashion that elevates every moment</p>
+                    <a href="#products">Shop Now</a>
                 </div>
+            </div>
+
+            <div class="slide">
+                <img loading="lazy" src="Slides show/4efb1dd1-d6f0-4f2d-9013-223cfe10b731.jpeg" alt="Chic streetwear">
+                <div class="slide-content">
+                    <h2>Street Luxe</h2>
+                    <p>Layered silhouettes for bold, confident style</p>
+                    <a href="#collections">View Collections</a>
+                </div>
+            </div>
+
+            <div class="slide">
+                <img loading="lazy" src="Slides show/6bc0102b-0b09-4d2a-814b-d7b8a77cdc79.jpeg" alt="Modern minimalist fashion">
+                <div class="slide-content">
+                    <h2>Modern Minimal</h2>
+                    <p>Clean lines, rich textures, effortless sophistication</p>
+                    <a href="#products">Explore Looks</a>
+                </div>
+            </div>
+
+            <div class="slide">
+                <img loading="lazy" src="Slides show/7ad63318-5ffe-4208-9eeb-d34723e975fd.jpeg" alt="Editorial style">
+                <div class="slide-content">
+                    <h2>Editorial Edge</h2>
+                    <p>Statement pieces crafted to stand out</p>
+                    <a href="#collections">See The Drop</a>
+                </div>
+            </div>
+
+            <div class="slide">
+                <img loading="lazy" src="Slides show/847f2c7b-75ff-4cc7-84bd-34a3a4235ee3.jpeg" alt="Bold accessories">
+                <div class="slide-content">
+                    <h2>Accessorize Boldly</h2>
+                    <p>Finish your look with sculptural details</p>
+                    <a href="#products">Shop Accessories</a>
+                </div>
+            </div>
+
+            <div class="slide">
+                <img loading="lazy" src="Slides show/d36f6afb-f857-4db8-803d-0814afceb40d.jpeg" alt="Statement coat">
+                <div class="slide-content">
+                    <h2>Winter Icons</h2>
+                    <p>Warmth meets runway-ready silhouettes</p>
+                    <a href="#products">Stay Warm</a>
+                </div>
+            </div>
+
+            <div class="slide">
+                <img loading="lazy" src="Slides show/f56d0d2f-7892-40b6-92fe-51e365e7bd12.jpeg" alt="Summer essentials">
+                <div class="slide-content">
+                    <h2>Summer Essentials</h2>
+                    <p>Breezy fabrics and effortless layers</p>
+                    <a href="#collections">Shop Summer</a>
+                </div>
+            </div>
+
+            <div class="slide">
+                <img loading="lazy" src="Slides show/ff45d270-1023-4bce-9952-38ed423e443f.jpeg" alt="Evening dress">
+                <div class="slide-content">
+                    <h2>Evening Glamour</h2>
+                    <p>Red-carpet ready silhouettes for every occasion</p>
+                    <a href="#products">View Dresses</a>
+                </div>
+            </div>
+
+            <div class="slideshow-dots">
+                <span class="dot active" onclick="currentSlide(1)"></span>
+                <span class="dot" onclick="currentSlide(2)"></span>
+                <span class="dot" onclick="currentSlide(3)"></span>
+                <span class="dot" onclick="currentSlide(4)"></span>
+                <span class="dot" onclick="currentSlide(5)"></span>
+                <span class="dot" onclick="currentSlide(6)"></span>
+                <span class="dot" onclick="currentSlide(7)"></span>
+                <span class="dot" onclick="currentSlide(8)"></span>
             </div>
         </div>
     </section>
@@ -358,7 +460,7 @@
                     <h4 class="font-semibold text-black mb-2">Classic White Shirt</h4>
                     <p class="text-gray-600 text-sm mb-3">Premium Cotton</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$89.00</span>
+                        <span class="font-bold text-black text-lg">89.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -373,7 +475,7 @@
                     <h4 class="font-semibold text-black mb-2">Elegant Blazer</h4>
                     <p class="text-gray-600 text-sm mb-3">Tailored Fit</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$199.00</span>
+                        <span class="font-bold text-black text-lg">199.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -388,7 +490,7 @@
                     <h4 class="font-semibold text-black mb-2">Designer Dress</h4>
                     <p class="text-gray-600 text-sm mb-3">Evening Wear</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$249.00</span>
+                        <span class="font-bold text-black text-lg">249.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -403,7 +505,7 @@
                     <h4 class="font-semibold text-black mb-2">Casual Jeans</h4>
                     <p class="text-gray-600 text-sm mb-3">Premium Denim</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$129.00</span>
+                        <span class="font-bold text-black text-lg">129.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -418,7 +520,7 @@
                     <h4 class="font-semibold text-black mb-2">Silk Scarf</h4>
                     <p class="text-gray-600 text-sm mb-3">Luxury Accessory</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$59.00</span>
+                        <span class="font-bold text-black text-lg">59.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -433,7 +535,7 @@
                     <h4 class="font-semibold text-black mb-2">Leather Jacket</h4>
                     <p class="text-gray-600 text-sm mb-3">Genuine Leather</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$299.00</span>
+                        <span class="font-bold text-black text-lg">299.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -448,7 +550,7 @@
                     <h4 class="font-semibold text-black mb-2">Wool Coat</h4>
                     <p class="text-gray-600 text-sm mb-3">Winter Essential</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$349.00</span>
+                        <span class="font-bold text-black text-lg">349.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -463,7 +565,7 @@
                     <h4 class="font-semibold text-black mb-2">Sneakers</h4>
                     <p class="text-gray-600 text-sm mb-3">Comfort & Style</p>
                     <div class="flex justify-between items-center">
-                        <span class="font-bold text-black text-lg">$149.00</span>
+                        <span class="font-bold text-black text-lg">149.00</span>
                         <button class="bg-black text-white px-4 py-2 hover:bg-gray-800 transition-colors duration-300">
                             <i class="fas fa-shopping-bag"></i>
                         </button>
@@ -622,18 +724,23 @@
             }, 5000); // Change slide every 5 seconds
         }
         
-        // Initialize auto-play
-        resetAutoPlay();
-        
-        // Pause on hover
-        const slideshowContainer = document.querySelector('.slideshow-container');
-        slideshowContainer.addEventListener('mouseenter', () => {
-            clearInterval(slideInterval);
-        });
-        
-        slideshowContainer.addEventListener('mouseleave', () => {
+        // Initialize auto-play only when slides exist
+        if (slides.length) {
+            showSlide(0);
             resetAutoPlay();
-        });
+
+            // Pause on hover
+            const slideshowContainer = document.querySelector('.slideshow-container');
+            if (slideshowContainer) {
+                slideshowContainer.addEventListener('mouseenter', () => {
+                    clearInterval(slideInterval);
+                });
+                
+                slideshowContainer.addEventListener('mouseleave', () => {
+                    resetAutoPlay();
+                });
+            }
+        }
     </script>
 </body>
 </html>
