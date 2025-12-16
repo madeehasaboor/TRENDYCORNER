@@ -10,6 +10,15 @@
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
         body { font-family: 'Inter', sans-serif; }
         .font-elegant { font-family: 'Playfair Display', serif; }
+        /* shared mobile menu */
+        #globalMobileHamburger { display: none; position: fixed; right: 1rem; top: 0.75rem; z-index: 9999; background: transparent; border: none; }
+        #globalMobileHamburger i { font-size: 1.25rem; color: #111827; }
+        @media (max-width: 767px){ #globalMobileHamburger { display: block; } }
+        #globalMobileNavMenu { display: none; position: fixed; left:0; right:0; background:#fff; z-index:9998; border-bottom:1px solid rgba(0,0,0,0.06); }
+        #globalMobileNavMenu.open { display: block; }
+        #globalMobileNavMenu .mobile-inner { padding: 0.75rem; display:flex; flex-direction:column; gap:0.25rem; }
+        #globalMobileNavMenu .mobile-inner a, #globalMobileNavMenu .mobile-inner button { padding:0.75rem 0; text-align:left; color:#374151; border-bottom:1px solid rgba(0,0,0,0.04); background:transparent; }
+        #globalMobileNavMenu .mobile-sub-list { padding-left:1rem; display:none; }
     </style>
 </head>
 <body class="bg-white text-black">
@@ -48,6 +57,34 @@
         </section>
     </main>
 
+    <!-- Shared mobile hamburger/menu for mobile pages -->
+    <button id="globalMobileHamburger" aria-label="Toggle menu"><i class="fas fa-bars"></i></button>
+    <nav id="globalMobileNavMenu" aria-label="Mobile menu">
+      <div class="mobile-inner">
+        <a href="sale.html">Sale</a>
+        <div>
+          <button data-global-mobile-sub="Summers">Summers <i class="fas fa-chevron-down"></i></button>
+          <div class="mobile-sub-list" data-global-sub-for="Summers">
+            <a href="Nishat.html">Nishat</a>
+            <a href="crimson.html">Crimson</a>
+            <a href="Sana Safinaz.html">Sana Safinaz</a>
+            <a href="Bareeze.html">Bareeze</a>
+          </div>
+        </div>
+        <div>
+          <button data-global-mobile-sub="Winters">Winters <i class="fas fa-chevron-down"></i></button>
+          <div class="mobile-sub-list" data-global-sub-for="Winters">
+            <a href="category.html?name=Pure%20Pashmina">Pure Pashmina</a>
+            <a href="category.html?name=Pashmina%20kani">Pashmina kani</a>
+            <a href="category.html?name=Shawls">Shawls</a>
+          </div>
+        </div>
+        <a href="category.html?name=Mix%20Brands">Mix Brands</a>
+        <a href="contact.html">Contact</a>
+        <a href="cart.html">Cart</a>
+      </div>
+    </nav>
+
     <script>
         function getQueryParam(name) {
             const params = new URLSearchParams(window.location.search);
@@ -64,6 +101,37 @@
         nameTextEl.textContent = displayName;
         subtitleEl.textContent = `Explore the latest arrivals in ${displayName} at Trendy Corner.`;
         document.title = `${displayName} - Trendy Corner`;
+
+        window.addEventListener('DOMContentLoaded', function(){
+          const hamburger = document.getElementById('globalMobileHamburger');
+          const mobileNav = document.getElementById('globalMobileNavMenu');
+          const headerEl = document.querySelector('header');
+          if(!hamburger || !mobileNav) return;
+
+          function positionMobileNav(){
+            const h = headerEl ? Math.ceil(headerEl.getBoundingClientRect().height) : 0;
+            mobileNav.style.top = h + 'px';
+          }
+
+          function toggleMobileNav(){
+            mobileNav.classList.toggle('open');
+            mobileNav.style.display = mobileNav.classList.contains('open') ? 'block' : 'none';
+          }
+
+          hamburger.addEventListener('click', function(e){ e.stopPropagation(); toggleMobileNav(); });
+          document.addEventListener('click', function(e){ if(!mobileNav.classList.contains('open')) return; if(!e.target.closest('#globalMobileNavMenu') && !e.target.closest('#globalMobileHamburger')) { mobileNav.classList.remove('open'); mobileNav.style.display='none'; } });
+
+          document.querySelectorAll('[data-global-mobile-sub]').forEach(btn=>{
+            btn.addEventListener('click', function(){
+              const key = this.getAttribute('data-global-mobile-sub');
+              const list = document.querySelector('[data-global-sub-for="'+key+'"]');
+              if(!list) return; list.style.display = list.style.display === 'block' ? 'none' : 'block';
+            });
+          });
+
+          window.addEventListener('resize', positionMobileNav);
+          positionMobileNav();
+        });
     </script>
 </body>
 </html>
