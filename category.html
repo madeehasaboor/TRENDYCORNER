@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Category - Trendy Corner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .font-elegant { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-white text-black">
+    <header class="border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3">
+                <img src="logo.png" alt="Trendy Corner logo" class="h-10 w-10 object-contain">
+                <span class="font-elegant text-2xl font-bold">Trendy Corner</span>
+            </a>
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="index.html#home" class="hover:text-gray-700">Home</a>
+                <a href="sale.html" class="hover:text-gray-700">Sale</a>
+                <a href="index.html#collections" class="hover:text-gray-700">Summers</a>
+                <a href="index.html#collections" class="hover:text-gray-700">Winters</a>
+                <a href="index.html#collections" class="hover:text-gray-700">Mix Brands</a>
+                <a href="contact.html" class="hover:text-gray-700">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <div class="text-center space-y-4">
+            <p class="text-sm uppercase tracking-[0.25em] text-gray-500">Category</p>
+            <h1 id="categoryTitle" class="font-elegant text-4xl font-bold">Category</h1>
+            <p id="categorySubtitle" class="text-gray-600 max-w-2xl mx-auto"></p>
+            <div class="flex justify-center gap-4 pt-4">
+                <a href="index.html#products" class="px-5 py-3 border border-black text-black font-semibold hover:bg-black hover:text-white transition">Shop Products</a>
+                <a href="index.html#collections" class="px-5 py-3 bg-black text-white font-semibold hover:bg-gray-800 transition">Back to Collections</a>
+            </div>
+        </div>
+
+        <section class="mt-12 max-w-5xl mx-auto">
+            <div class="border border-gray-200 rounded-lg p-6 text-center bg-gray-50">
+                <p class="text-gray-700">This is a placeholder page for <span class="font-semibold" id="categoryNameText">the category</span>. You can add products or collection content here.</p>
+            </div>
+        </section>
+    </main>
+
+    <script>
+        function getQueryParam(name) {
+            const params = new URLSearchParams(window.location.search);
+            return params.get(name) || '';
+        }
+
+        const rawName = getQueryParam('name') || 'Category';
+        const displayName = decodeURIComponent(rawName.replace(/\+/g, ' '));
+        const titleEl = document.getElementById('categoryTitle');
+        const subtitleEl = document.getElementById('categorySubtitle');
+        const nameTextEl = document.getElementById('categoryNameText');
+
+        titleEl.textContent = displayName;
+        nameTextEl.textContent = displayName;
+        subtitleEl.textContent = `Explore the latest arrivals in ${displayName} at Trendy Corner.`;
+        document.title = `${displayName} - Trendy Corner`;
+    </script>
+</body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crimson - Trendy Corner</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+        .font-elegant { font-family: 'Playfair Display', serif; }
+    </style>
+</head>
+<body class="bg-white text-black">
+    <header class="border-b border-gray-200 shadow-sm">
+        <div class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3">
+                <img src="logo.png" alt="Trendy Corner logo" class="h-10 w-10 object-contain">
+                <span class="font-elegant text-2xl font-bold">Trendy Corner</span>
+            </a>
+
+            <!-- mobile menu button -->
+            <button id="menuToggle" class="md:hidden p-2 rounded-md text-gray-700 hover:bg-gray-100" aria-label="Toggle menu" aria-expanded="false">
+                <i class="fa-solid fa-bars"></i>
+            </button>
+
+            <!-- navigation -->
+            <nav id="mainNav" class="hidden md:flex items-center space-x-6">
+                <a href="index.html" class="nav-link hover:text-gray-700">Home</a>
+                <a href="shop.html" class="nav-link hover:text-gray-700">Shop</a>
+                <a href="categories.html" class="nav-link hover:text-gray-700">Categories</a>
+                <a href="contact.html" class="nav-link hover:text-gray-700">Contact</a>
+                <a href="cart.html" class="nav-link hover:text-gray-700 flex items-center space-x-2">
+                    <i class="fa-solid fa-cart-shopping"></i><span>Cart</span>
+                </a>
+            </nav>
+        </div>
+
+        <!-- mobile nav panel (optional stacked layout for small screens) -->
+        <div id="mobilePanel" class="md:hidden hidden border-t border-gray-100">
+            <div class="container mx-auto px-6 py-3 flex flex-col space-y-2">
+                <a href="index.html" class="nav-link block py-2">Home</a>
+                <a href="shop.html" class="nav-link block py-2">Shop</a>
+                <a href="categories.html" class="nav-link block py-2">Categories</a>
+                <a href="contact.html" class="nav-link block py-2">Contact</a>
+                <a href="cart.html" class="nav-link block py-2">Cart</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        <div class="text-center space-y-3">
+            <p class="text-sm tracking-[0.2em] uppercase text-gray-500">Collection</p>
+            <h1 class="font-elegant text-4xl font-bold">Crimson</h1>
+            <p class="text-gray-600">Explore the Crimson selection from Trendy Corner.</p>
+        </div>
+    </main>
+
+    <script>
+    (function () {
+      const menuToggle = document.getElementById('menuToggle');
+      const mainNav = document.getElementById('mainNav');
+      const mobilePanel = document.getElementById('mobilePanel');
+
+      // Toggle mobile nav
+      function toggleMobile(open) {
+        const isOpen = !!open;
+        if (isOpen) {
+          mainNav.classList.remove('hidden');
+          mobilePanel.classList.remove('hidden');
+          menuToggle.setAttribute('aria-expanded', 'true');
+        } else {
+          mainNav.classList.add('hidden');
+          mobilePanel.classList.add('hidden');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        }
+      }
+
+      menuToggle && menuToggle.addEventListener('click', function () {
+        const currentlyHidden = mainNav.classList.contains('hidden') || mobilePanel.classList.contains('hidden');
+        toggleMobile(currentlyHidden);
+      });
+
+      // Close mobile menu when resizing to desktop
+      window.addEventListener('resize', () => {
+        if (window.innerWidth >= 768) {
+          mainNav.classList.remove('hidden');
+          mobilePanel.classList.add('hidden');
+          menuToggle.setAttribute('aria-expanded', 'false');
+        } else {
+          mainNav.classList.add('hidden');
+        }
+      });
+
+      // Close mobile menu after clicking a link and allow navigation
+      document.addEventListener('click', (e) => {
+        const a = e.target.closest('a');
+        if (!a) return;
+        const insideMobile = mobilePanel.contains(a) || (mainNav.contains(a) && window.innerWidth < 768);
+        if (insideMobile) {
+          // small delay to allow normal navigation to start, then hide menu for SPA or back navigation convenience
+          setTimeout(() => toggleMobile(false), 100);
+        }
+      });
+
+      // Set active tab based on current path or hash
+      function setActiveTab() {
+        const links = document.querySelectorAll('.nav-link');
+        const current = (location.pathname.split('/').pop() || 'index.html').toLowerCase();
+        const currentHash = (location.hash || '').toLowerCase();
+
+        links.forEach(link => {
+          const href = (link.getAttribute('href') || '').split('/').pop().toLowerCase();
+          link.classList.remove('text-red-600', 'font-semibold');
+          if (href && (href === current || href === currentHash.replace('#','') || (href === '' && current === 'index.html'))) {
+            link.classList.add('text-red-600', 'font-semibold');
+          }
+        });
+      }
+
+      // initial
+      setActiveTab();
+
+      // update on navigation events
+      window.addEventListener('popstate', setActiveTab);
+      window.addEventListener('hashchange', setActiveTab);
+    })();
+    </script>
+</body>
+</html>
