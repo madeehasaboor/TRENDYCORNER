@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trendy Corner - Elegant Fashion & Style</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    .font-elegant {
+      font-family: 'Playfair Display', serif;
+    }
+    
+    .slideshow-container {
+      position: relative;
+      width: 100%;
+      height: 80vh;
+      overflow: hidden;
+    }
+    
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+    
+    .slide.active {
+      opacity: 1;
+    }
+    
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.5);
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    
+    .dot.active {
+      background: white;
+    }
+  </style>
+</head>
+<body class="bg-white text-black">
+  <!-- Header -->
+      <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="index.html" class="flex items-center space-x-3">
+                <img src="home/Logo.jpeg" alt="Trendy Corner logo" class="h-12 w-12 rounded-full shadow" />
+                <span class="font-elegant text-2xl font-bold">Trendy Corner</span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="index.html" class="nav-link text-black font-medium hover:text-pink-600">Home</a>
+                <a href="sale.html" class="nav-link text-black font-medium hover:text-pink-600">Sale</a>
+
+                <div class="relative group">
+                    <button type="button" class="nav-link text-black font-medium hover:text-pink-600 flex items-center gap-2">
+                        Summers
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-56 bg-white shadow-xl border border-gray-200 rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        <a href="Summers/Alif.html" class="block px-4 py-2 hover:bg-gray-100">Alif</a>
+                        <a href="Summers/Asifa Nabeel.html" class="block px-4 py-2 hover:bg-gray-100">Asifa Nabeel</a>
+                        <a href="Summers/Bareeze.html" class="block px-4 py-2 hover:bg-gray-100">Bareeze</a>
+                        <a href="Summers/crimson.html" class="block px-4 py-2 hover:bg-gray-100">Crimson</a>
+                        <a href="Summers/Sufusse.html" class="block px-4 py-2 hover:bg-gray-100">Sufusse</a>
+                        <a href="Summers/Afrozeh.html" class="block px-4 py-2 hover:bg-gray-100">Afrozeh</a>
+                        <a href="Summers/Maria.B.html" class="block px-4 py-2 hover:bg-gray-100">Maria B</a>
+                        <a href="Summers/Mushq.html" class="block px-4 py-2 hover:bg-gray-100">Mushq</a>
+                        <a href="Summers/Nishat.html" class="block px-4 py-2 hover:bg-gray-100">Nishat</a>
+                        <a href="Summers/Noor by SAdia Asad.html" class="block px-4 py-2 hover:bg-gray-100">Noor by Sadia Asad</a>
+                        <a href="Summers/Sana Safinaz.html" class="block px-4 py-2 hover:bg-gray-100">Sana Safinaz</a>
+                        <a href="Summers/Sapphire.html" class="block px-4 py-2 hover:bg-gray-100">Sapphire</a>
+                        <a href="Summers/Zara Shajahan.html" class="block px-4 py-2 hover:bg-gray-100">Zara Shajahan</a>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button type="button" class="nav-link text-black font-medium hover:text-pink-600 flex items-center gap-2">
+                        Winters
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-56 bg-white shadow-xl border border-gray-200 rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        <a href="winters/Pure Pashmina.html" class="block px-4 py-2 hover:bg-gray-100">Pure Pashmina</a>
+                        <a href="winters/Pashmina Kani.html" class="block px-4 py-2 hover:bg-gray-100">Pashmina Kani</a>
+                        <a href="winters/Shawls.html" class="block px-4 py-2 hover:bg-gray-100">Shawls</a>
+                        <a href="winters/Kami Silk Shawls.html" class="block px-4 py-2 hover:bg-gray-100">Kami Silk Shawls</a>
+                    </div>
+                </div>
+
+                <a href="Mix Brand.html" class="nav-link text-black font-medium hover:text-pink-600">Mix Brands</a>
+                <a href="Festival Collection.html" class="nav-link text-black font-medium hover:text-pink-600">Festival Collection</a>
+                <a href="contact.html" class="nav-link text-black font-medium hover:text-pink-600">Contact</a>
+                <a href="cart.html" class="relative text-black hover:text-pink-600" aria-label="Cart">
+                    <i class="fas fa-shopping-bag text-xl"></i>
+                    <span id="cartCount" class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full min-w-[1.25rem] h-5 px-1 flex items-center justify-center">0</span>
+                </a>
+            </div>
+
+            <button id="tcMobileButton" class="md:hidden text-gray-700 hover:text-pink-600" aria-label="Toggle menu" type="button">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+
+        <div id="tcMobileMenu" class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-6 py-4">
+                <a href="index.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Home</a>
+                <a href="sale.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Sale</a>
+
+                <div class="py-3 border-b border-gray-100">
+                    <button type="button" class="w-full flex justify-between items-center text-gray-800 hover:text-pink-600" data-tc-sub="Summers">
+                        <span>Summers</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="mt-2 pl-4 hidden" data-tc-submenu="Summers">
+                        <a href="Summers/Alif.html" class="block py-2 text-gray-700 hover:text-pink-600">Alif</a>
+                        <a href="Summers/Asifa Nabeel.html" class="block py-2 text-gray-700 hover:text-pink-600">Asifa Nabeel</a>
+                        <a href="Summers/Bareeze.html" class="block py-2 text-gray-700 hover:text-pink-600">Bareeze</a>
+                        <a href="Summers/crimson.html" class="block py-2 text-gray-700 hover:text-pink-600">Crimson</a>
+                        <a href="Summers/Sufusse.html" class="block py-2 text-gray-700 hover:text-pink-600">Sufusse</a>
+                        <a href="Summers/Afrozeh.html" class="block py-2 text-gray-700 hover:text-pink-600">Afrozeh</a>
+                        <a href="Summers/Maria.B.html" class="block py-2 text-gray-700 hover:text-pink-600">Maria B</a>
+                        <a href="Summers/Mushq.html" class="block py-2 text-gray-700 hover:text-pink-600">Mushq</a>
+                        <a href="Summers/Nishat.html" class="block py-2 text-gray-700 hover:text-pink-600">Nishat</a>
+                        <a href="Summers/Noor by SAdia Asad.html" class="block py-2 text-gray-700 hover:text-pink-600">Noor by Sadia Asad</a>
+                        <a href="Summers/Sana Safinaz.html" class="block py-2 text-gray-700 hover:text-pink-600">Sana Safinaz</a>
+                        <a href="Summers/Sapphire.html" class="block py-2 text-gray-700 hover:text-pink-600">Sapphire</a>
+                        <a href="Summers/Zara Shajahan.html" class="block py-2 text-gray-700 hover:text-pink-600">Zara Shajahan</a>
+                    </div>
+                </div>
+
+                <div class="py-3 border-b border-gray-100">
+                    <button type="button" class="w-full flex justify-between items-center text-gray-800 hover:text-pink-600" data-tc-sub="Winters">
+                        <span>Winters</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="mt-2 pl-4 hidden" data-tc-submenu="Winters">
+                        <a href="winters/Pure Pashmina.html" class="block py-2 text-gray-700 hover:text-pink-600">Pure Pashmina</a>
+                        <a href="winters/Pashmina Kani.html" class="block py-2 text-gray-700 hover:text-pink-600">Pashmina Kani</a>
+                        <a href="winters/Shawls.html" class="block py-2 text-gray-700 hover:text-pink-600">Shawls</a>
+                        <a href="winters/Kami Silk Shawls.html" class="block py-2 text-gray-700 hover:text-pink-600">Kami Silk Shawls</a>
+                    </div>
+                </div>
+
+                <a href="Mix Brand.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Mix Brands</a>
+                <a href="Festival Collection.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Festival Collection</a>
+                <a href="contact.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Contact</a>
+                <a href="cart.html" class="block py-3 text-gray-800 hover:text-pink-600">Cart <span class="ml-2 bg-pink-500 text-white text-xs rounded-full px-2 py-1" data-tc-cart-inline>0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Slideshow -->
+  <section class="relative" id="hero">
+        <div class="slideshow-container">
+            <div class="slide active">
+        <img src="home/Slides show/41f4a5c3-2dc1-462c-8b83-9a7e9ce64777.jpeg" alt="Elegant outfit" />
+            </div>
+            <div class="slide">
+        <img src="home/Slides show/4efb1dd1-d6f0-4f2d-9013-223cfe10b731.jpeg" alt="Chic streetwear" />
+            </div>
+            <div class="slide">
+        <img src="home/Slides show/6bc0102b-0b09-4d2a-814b-d7b8a77cdc79.jpeg" alt="Modern style" />
+            </div>
+            <div class="slide">
+        <img src="home/Slides show/7ad63318-5ffe-4208-9eeb-d34723e975fd.jpeg" alt="Editorial look" />
+            </div>
+            <div class="slide">
+        <img src="home/Slides show/d36f6afb-f857-4db8-803d-0814afceb40d.jpeg" alt="Statement coat" />
+            </div>
+            <div class="slide">
+        <img src="home/Slides show/f56d02f-7892-40b6-92fe-51e365e7bd12.jpeg" alt="Summer essentials" />
+            </div>
+            <div class="slide">
+        <img src="home/Slides show/ff45d270-1023-4bce-9952-38ed423e443f.jpeg" alt="Evening dress" />
+            </div>
+
+      <button class="absolute left-4 top-1/2 -translate-y-1/2 text-white bg-black/40 rounded-full w-10 h-10 flex items-center justify-center" onclick="changeSlide(-1)">
+        <i class="fas fa-chevron-left"></i>
+      </button>
+      <button class="absolute right-4 top-1/2 -translate-y-1/2 text-white bg-black/40 rounded-full w-10 h-10 flex items-center justify-center" onclick="changeSlide(1)">
+        <i class="fas fa-chevron-right"></i>
+      </button>
+
+      <div class="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-3" id="dotsContainer"></div>
+            
+      <div class="absolute bottom-10 left-1/2 -translate-x-1/2 text-center text-white bg-black/40 px-6 py-3 rounded-full">
+        <p class="text-xs tracking-[0.25em] uppercase">Ready to Wear</p>
+        <h2 class="font-elegant text-3xl font-bold tracking-wide">Winter &#39;25 Collection</h2>
+        <a href="#products" class="inline-block mt-3 px-6 py-2 border border-white rounded-full text-sm tracking-widest uppercase">Shop Now</a>
+            </div>
+        </div>
+    </section>
+
+  <!-- Products section (simplified) -->
+  <section id="products" class="py-16 container mx-auto px-6">
+    <div class="flex items-center justify-between mb-8">
+                    <div>
+        <p class="text-xs uppercase tracking-[0.25em] text-gray-500">New In</p>
+        <h3 class="font-elegant text-3xl font-bold">This Week&#39;s Highlights</h3>
+                    </div>
+      <a href="sale.html" class="text-sm font-semibold underline text-pink-600">View All Sale</a>
+                </div>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="border border-gray-200 p-3 rounded-lg shadow-sm flex flex-col">
+        <div class="aspect-[3/4] overflow-hidden mb-3">
+          <img src="home/Slides show/41f4a5c3-2dc1-462c-8b83-9a7e9ce64777.jpeg" alt="Embroidered Khaddar Shirt" class="w-full h-full object-cover" />
+        </div>
+        <h4 class="font-semibold text-sm md:text-base mb-1">Embroidered Khaddar Shirt</h4>
+        <p class="text-xs text-gray-600 mb-2">Winter &#39;25 – New Arrivals</p>
+        <div class="mt-auto flex items-center justify-between">
+          <span class="font-bold text-lg">Rs. 3,990</span>
+          <button class="add-to-cart bg-black text-white px-3 py-1.5 text-xs rounded" data-id="1" data-name="Embroidered Khaddar Shirt" data-price="3990" data-image="home/Slides show/41f4a5c3-2dc1-462c-8b83-9a7e9ce64777.jpeg">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                    </div>
+                </div>
+      <div class="border border-gray-200 p-3 rounded-lg flex flex-col">
+        <div class="aspect-[3/4] overflow-hidden mb-3">
+          <img src="home/Slides show/4efb1dd1-d6f0-4f2d-9013-223cfe10b731.jpeg" alt="3 Piece Embroidered Suit" class="w-full h-full object-cover" />
+                    </div>
+        <h4 class="font-semibold text-sm md:text-base mb-1">3 Piece Embroidered Suit</h4>
+        <p class="text-xs text-gray-600 mb-2">Unstitched – New In</p>
+        <div class="mt-auto flex items-center justify-between">
+          <span class="font-bold text-lg">Rs. 5,990</span>
+          <button class="add-to-cart bg-black text-white px-3 py-1.5 text-xs rounded" data-id="2" data-name="3 Piece Embroidered Suit" data-price="5990" data-image="home/Slides show/4efb1dd1-d6f0-4f2d-9013-223cfe10b731.jpeg">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                    </div>
+                </div>
+      <div class="border border-gray-200 p-3 rounded-lg flex flex-col">
+        <div class="aspect-[3/4] overflow-hidden mb-3">
+          <img src="home/Slides show/6bc0102b-0b09-4d2a-814b-d7b8a77cdc79.jpeg" alt="Winter Solid Shirt" class="w-full h-full object-cover" />
+                    </div>
+        <h4 class="font-semibold text-sm md:text-base mb-1">Winter Solid Shirt</h4>
+        <p class="text-xs text-gray-600 mb-2">Ready to Wear</p>
+        <div class="mt-auto flex items-center justify-between">
+          <span class="font-bold text-lg">Rs. 4,590</span>
+          <button class="add-to-cart bg-black text-white px-3 py-1.5 text-xs rounded" data-id="3" data-name="Winter Solid Shirt" data-price="4590" data-image="home/Slides show/6bc0102b-0b09-4d2a-814b-d7b8a77cdc79.jpeg">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                    </div>
+                </div>
+      <div class="border border-gray-200 p-3 rounded-lg flex flex-col">
+        <div class="aspect-[3/4] overflow-hidden mb-3">
+          <img src="home/Slides show/ff45d270-1023-4bce-9952-38ed423e443f.jpeg" alt="Quilted Puffer Jacket" class="w-full h-full object-cover" />
+                    </div>
+        <h4 class="font-semibold text-sm md:text-base mb-1">Quilted Puffer Jacket</h4>
+        <p class="text-xs text-gray-600 mb-2">West – Winter &#39;25</p>
+        <div class="mt-auto flex items-center justify-between">
+          <span class="font-bold text-lg">Rs. 8,990</span>
+          <button class="add-to-cart bg-black text-white px-3 py-1.5 text-xs rounded" data-id="4" data-name="Quilted Puffer Jacket" data-price="8990" data-image="home/Slides show/ff45d270-1023-4bce-9952-38ed423e443f.jpeg">
+                            <i class="fas fa-shopping-bag"></i>
+                        </button>
+                    </div>
+            </div>
+        </div>
+    </section>
+
+  <!-- About section -->
+  <section id="about" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-6 max-w-3xl text-center">
+      <h2 class="font-elegant text-3xl font-bold mb-4">About Trendy Corner</h2>
+      <p class="text-gray-700 leading-relaxed">
+        Trendy Corner is your multibrand online store for premium Pakistani fashion.
+        Discover carefully curated pieces from your favorite brands, all in one place.
+                </p>
+        </div>
+    </section>
+
+  <footer class="bg-gray-50 border-t border-gray-200">
+    <div class="container mx-auto px-6 py-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+      <div class="md:col-span-1">
+        <a href="#home" class="flex items-center space-x-3">
+          <img src="home/Logo.jpeg" alt="Trendy Corner" class="h-10 w-10 rounded-full shadow" />
+          <span class="font-elegant text-xl font-bold">Trendy Corner</span>
+        </a>
+        <p class="mt-3 text-gray-600 text-sm">Curated premium Pakistani fashion. Have a question or want help with an order? Reach out on WhatsApp or follow us on social.</p>
+        <p class="mt-4 text-xs text-gray-500">&copy; <span id="yearSpan"></span> Trendy Corner. All rights reserved.</p>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-gray-800 mb-3">Contact</h4>
+        <ul class="text-gray-600 space-y-3 text-sm">
+          <li class="flex items-center gap-3">
+            <i class="fab fa-whatsapp text-2xl text-green-500"></i>
+            <div>
+              <a href="https://wa.me/923001234567" class="hover:text-pink-600 font-medium">+92 300 1234567</a>
+              <div class="text-xs text-gray-500">WhatsApp support (9am - 6pm)</div>
+            </div>
+          </li>
+
+          <li class="flex items-center gap-3">
+            <i class="fas fa-envelope text-gray-400 text-lg"></i>
+            <a href="mailto:info@trendycorner.com" class="hover:text-pink-600">info@trendycorner.com</a>
+          </li>
+
+          <li class="flex items-center gap-3">
+            <i class="fas fa-map-marker-alt text-pink-600 text-lg"></i>
+            <span>V Block, DHA, Lahore</span>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="font-semibold text-gray-800 mb-3">Follow Us</h4>
+        <div class="flex items-center space-x-3">
+          <a href="https://facebook.com/yourpage" class="text-blue-600 hover:text-blue-800 bg-blue-50 p-3 rounded-full shadow-sm" aria-label="Facebook">
+            <i class="fab fa-facebook-f"></i>
+          </a>
+          <a href="https://instagram.com/yourpage" class="text-pink-500 hover:text-pink-700 bg-pink-50 p-3 rounded-full shadow-sm" aria-label="Instagram">
+            <i class="fab fa-instagram"></i>
+          </a>
+          <a href="https://instagram.com/yourpage" class="text-green-500 hover:text-green-700 bg-green-50 p-3 rounded-full shadow-sm" aria-label="WhatsApp">
+            <i class="fab fa-whatsapp"></i>
+          </a>
+        </div>
+
+        <div class="mt-6">
+          <h5 class="text-sm font-medium text-gray-700 mb-2">Opening Hours</h5>
+          <p class="text-sm text-gray-600">Mon - Sat: 10:00 AM - 7:00 PM</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="border-t border-gray-100">
+      <div class="container mx-auto px-6 py-3 flex flex-col md:flex-row items-center justify-between text-xs text-gray-500">
+        <p>Secure payments • Fast delivery across Pakistan</p>
+        <div class="mt-3 md:mt-0">Designed with <span class="text-pink-600">❤</span> • Trendy Corner</div>
+      </div>
+    </div>
+  </footer>
+
+    
+    <!-- global hamburger button removed on this page to avoid duplicate icon near cart -->
+<script>
+// Slideshow functionality
+let currentSlide = 0;
+let slides;
+let dots;
+let totalSlides;
+
+function showSlide(index) {
+  if (!slides || !dots) return;
+  slides.forEach(slide => slide.classList.remove('active'));
+  dots.forEach(dot => dot.classList.remove('active'));
+  
+  currentSlide = (index + totalSlides) % totalSlides;
+  slides[currentSlide].classList.add('active');
+  dots[currentSlide].classList.add('active');
+}
+
+function changeSlide(direction) {
+  showSlide(currentSlide + direction);
+}
+
+function createDots() {
+  const dotsContainer = document.getElementById('dotsContainer');
+  dotsContainer.innerHTML = '';
+  dots = [];
+  
+  for (let i = 0; i < totalSlides; i++) {
+    const dot = document.createElement('span');
+    dot.className = 'dot';
+    dot.onclick = () => showSlide(i);
+    dotsContainer.appendChild(dot);
+    dots.push(dot);
+  }
+}
+
+// Auto-advance slideshow
+function autoSlide() {
+  changeSlide(1);
+}
+
+// Initialize slideshow
+document.addEventListener('DOMContentLoaded', function() {
+  slides = document.querySelectorAll('.slide');
+  totalSlides = slides.length;
+  
+  createDots();
+  showSlide(0);
+  setInterval(autoSlide, 5000);
+  
+  // Update year in footer
+  document.getElementById('yearSpan').textContent = new Date().getFullYear();
+});
+
+// Cart functionality
+function addToCart(id, name, price, image) {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const existingItem = cart.find(item => item.id === id);
+  
+  if (existingItem) {
+    existingItem.quantity = (existingItem.quantity || 1) + 1;
+  } else {
+    cart.push({
+      id: id,
+      name: name,
+      price: price,
+      image: image,
+      quantity: 1
+    });
+  }
+  
+  localStorage.setItem('cart', JSON.stringify(cart));
+  updateCartCount();
+  
+  // Show feedback
+  const button = document.querySelector(`[data-id="${id}"]`);
+  const originalText = button.innerHTML;
+  button.innerHTML = '<i class="fas fa-check"></i>';
+  button.style.backgroundColor = '#10b981';
+  
+  setTimeout(() => {
+    button.innerHTML = originalText;
+    button.style.backgroundColor = '';
+  }, 1500);
+}
+
+function updateCartCount() {
+  const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+  const count = cart.reduce((total, item) => total + (item.quantity || 1), 0);
+  
+  const badge = document.getElementById('cartCount');
+  if (badge) {
+    badge.textContent = count;
+    badge.style.display = count > 0 ? 'flex' : 'none';
+  }
+}
+
+// Add event listeners to cart buttons
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.add-to-cart').forEach(button => {
+    button.addEventListener('click', function() {
+      const id = this.getAttribute('data-id');
+      const name = this.getAttribute('data-name');
+      const price = this.getAttribute('data-price');
+      const image = this.getAttribute('data-image');
+      
+      addToCart(id, name, price, image);
+    });
+  });
+  
+  updateCartCount();
+});
+</script>
+</body>
+</html>

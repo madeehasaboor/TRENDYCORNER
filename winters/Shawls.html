@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alif - Trendy Corner</title>
+    <script src="https://cdn.tailwindcss.com">
+
+// Product Modal Functions
+let currentProduct = null;
+let modalSlideInterval = null;
+
+function openProductModal(card) {
+  const modal = document.getElementById('productModal');
+  const productName = card.querySelector('h3').textContent;
+  const productPrice = card.querySelector('p').textContent;
+  const images = Array.from(card.querySelectorAll('.product-images img, img')).map(img => img.src);
+  
+  currentProduct = {
+    name: productName,
+    price: productPrice,
+    images: images.filter(src => src && !src.includes('Logo'))
+  };
+  
+  document.getElementById('modalProductName').textContent = currentProduct.name;
+  document.getElementById('modalProductPrice').textContent = currentProduct.price;
+  
+  const imagesContainer = document.getElementById('modalImagesContainer');
+  imagesContainer.innerHTML = '';
+  
+  // Add all images
+  currentProduct.images.forEach((src, index) => {
+    const img = document.createElement('img');
+    img.src = src;
+    img.alt = 'Product';
+    img.className = 'modal-main-image' + (index === 0 ? ' active' : '');
+    imagesContainer.appendChild(img);
+  });
+  
+  // Add dots navigation if multiple images
+  if (currentProduct.images.length > 1) {
+    const dotsContainer = document.createElement('div');
+    dotsContainer.className = 'modal-image-dots';
+    
+    currentProduct.images.forEach((src, index) => {
+      const dot = document.createElement('span');
+      dot.className = 'modal-image-dot' + (index === 0 ? ' active' : '');
+      dot.setAttribute('data-index', index);
+      dot.onclick = function() {
+        showModalImage(index);
+        resetModalAutoSlide();
+      };
+      dotsContainer.appendChild(dot);
+    });
+    
+    imagesContainer.appendChild(dotsContainer);
+    
+    // Start auto-slide
+    startModalAutoSlide();
+  }
+  
+  modal.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+
+let currentModalImageIndex = 0;
+
+function showModalImage(index) {
+  const images = document.querySelectorAll('.modal-main-image');
+  const dots = document.querySelectorAll('.modal-image-dot');
+  
+  images.forEach(img => img.classList.remove('active'));
+  dots.forEach(dot => dot.classList.remove('active'));
+  
+  if (images[index]) {
+    images[index].classList.add('active');
+  }
+  if (dots[index]) {
+    dots[index].classList.add('active');
+  }
+  
+  currentModalImageIndex = index;
+}
+
+function nextModalImage() {
+  const images = document.querySelectorAll('.modal-main-image');
+  const nextIndex = (currentModalImageIndex + 1) % images.length;
+  showModalImage(nextIndex);
+}
+
+function startModalAutoSlide() {
+  stopModalAutoSlide();
+  modalSlideInterval = setInterval(nextModalImage, 3000);
+}
+
+function stopModalAutoSlide() {
+  if (modalSlideInterval) {
+    clearInterval(modalSlideInterval);
+    modalSlideInterval = null;
+  }
+}
+
+function resetModalAutoSlide() {
+  stopModalAutoSlide();
+  startModalAutoSlide();
+}
+
+function closeProductModal() {
+  const modal = document.getElementById('productModal');
+  modal.classList.remove('active');
+  document.body.style.overflow = '';
+  stopModalAutoSlide();
+  currentProduct = null;
+  currentModalImageIndex = 0;
+}
+
+function addToCartFromModal() {
+  if (!currentProduct) return;
+  
+  alert('Product added to cart: ' + currentProduct.name);
+  closeProductModal();
+}
+
+document.getElementById('productModal').addEventListener('click', function(e) {
+  if (e.target === this) {
+    closeProductModal();
+  }
+});
+</script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .product-card {
+            position: relative;
+            width: 100%;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #fff;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .product-card:hover {
+            transform: scale(1.06);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.25);
+        }
+
+        .product-card img {
+            width: 100%;
+            display: block;
+            object-fit: cover;
+            aspect-ratio: 3/4;
+        }
+
+        .overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.55);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .product-card:hover .overlay {
+            opacity: 1;
+        }
+
+        .overlay button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 30px;
+            background: #ffffff;
+            color: #db2777;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease, transform 0.2s ease;
+        }
+
+        .overlay button:hover {
+            background: #eee;
+            transform: translateY(-2px);
+        }
+
+        .font-elegant {
+            font-family: 'Playfair Display', serif;
+        }
+    
+        /* Product Modal */
+        .product-modal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.75);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .product-modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            padding: 2rem;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #f3f4f6;
+            border: none;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s ease;
+        }
+
+        .modal-close:hover {
+            background: #e5e7eb;
+        }
+
+        .modal-images {
+            position: relative;
+        }
+
+        .modal-images .modal-main-image {
+            width: 100%;
+            border-radius: 12px;
+            display: none;
+            transition: opacity 0.5s ease;
+        }
+
+        .modal-images .modal-main-image.active {
+            display: block;
+        }
+
+        .modal-image-dots {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .modal-image-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: rgba(255,255,255,0.6);
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal-image-dot.active {
+            background: #ffffff;
+        }
+
+        .modal-thumbnails {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .modal-thumbnail {
+            width: 60px;
+            height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: border 0.3s ease;
+            object-fit: cover;
+        }
+
+        .modal-thumbnail.active {
+            border-color: #db2777;
+        }
+
+        .modal-details h2 {
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 1rem;
+        }
+
+        .modal-price {
+            font-size: 24px;
+            color: #db2777;
+            font-weight: bold;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-description {
+            color: #6b7280;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-add-cart {
+            width: 100%;
+            padding: 16px;
+            background: #db2777;
+            color: white;
+            border: none;
+            border-radius: 30px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.3s ease;
+        }
+
+        .modal-add-cart:hover {
+            background: #be185d;
+        }
+
+        @media (max-width: 768px) {
+            .modal-content {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body class="bg-white text-black">
+    <!-- Header -->
+        <header class="sticky top-0 z-50 bg-white border-b border-gray-200 shadow-sm">
+        <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
+            <a href="../index.html" class="flex items-center space-x-3">
+                <img src="../home/Logo.jpeg" alt="Trendy Corner logo" class="h-12 w-12 rounded-full shadow" />
+                <span class="font-elegant text-2xl font-bold">Trendy Corner</span>
+            </a>
+
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="../index.html" class="nav-link text-black font-medium hover:text-pink-600">Home</a>
+                <a href="../sale.html" class="nav-link text-black font-medium hover:text-pink-600">Sale</a>
+
+                <div class="relative group">
+                    <button type="button" class="nav-link text-black font-medium hover:text-pink-600 flex items-center gap-2">
+                        Summers
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-56 bg-white shadow-xl border border-gray-200 rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        <a href="../Summers/Alif.html" class="block px-4 py-2 hover:bg-gray-100">Alif</a>
+                        <a href="../Summers/Asifa Nabeel.html" class="block px-4 py-2 hover:bg-gray-100">Asifa Nabeel</a>
+                        <a href="../Summers/Bareeze.html" class="block px-4 py-2 hover:bg-gray-100">Bareeze</a>
+                        <a href="../Summers/crimson.html" class="block px-4 py-2 hover:bg-gray-100">Crimson</a>
+                        <a href="../Summers/Sufusse.html" class="block px-4 py-2 hover:bg-gray-100">Sufusse</a>
+                        <a href="../Summers/Afrozeh.html" class="block px-4 py-2 hover:bg-gray-100">Afrozeh</a>
+                        <a href="../Summers/Maria.B.html" class="block px-4 py-2 hover:bg-gray-100">Maria B</a>
+                        <a href="../Summers/Mushq.html" class="block px-4 py-2 hover:bg-gray-100">Mushq</a>
+                        <a href="../Summers/Nishat.html" class="block px-4 py-2 hover:bg-gray-100">Nishat</a>
+                        <a href="../Summers/Noor by SAdia Asad.html" class="block px-4 py-2 hover:bg-gray-100">Noor by Sadia Asad</a>
+                        <a href="../Summers/Sana Safinaz.html" class="block px-4 py-2 hover:bg-gray-100">Sana Safinaz</a>
+                        <a href="../Summers/Sapphire.html" class="block px-4 py-2 hover:bg-gray-100">Sapphire</a>
+                        <a href="../Summers/Zara Shajahan.html" class="block px-4 py-2 hover:bg-gray-100">Zara Shajahan</a>
+                    </div>
+                </div>
+
+                <div class="relative group">
+                    <button type="button" class="nav-link text-black font-medium hover:text-pink-600 flex items-center gap-2">
+                        Winters
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="absolute left-0 mt-2 w-56 bg-white shadow-xl border border-gray-200 rounded-lg py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                        <a href="../winters/Pure Pashmina.html" class="block px-4 py-2 hover:bg-gray-100">Pure Pashmina</a>
+                        <a href="../winters/Pashmina Kani.html" class="block px-4 py-2 hover:bg-gray-100">Pashmina Kani</a>
+                        <a href="../winters/Shawls.html" class="block px-4 py-2 hover:bg-gray-100">Shawls</a>
+                        <a href="../winters/Kami Silk Shawls.html" class="block px-4 py-2 hover:bg-gray-100">Kami Silk Shawls</a>
+                    </div>
+                </div>
+
+                <a href="../Mix Brand.html" class="nav-link text-black font-medium hover:text-pink-600">Mix Brands</a>
+                <a href="../Festival Collection.html" class="nav-link text-black font-medium hover:text-pink-600">Festival Collection</a>
+                <a href="../contact.html" class="nav-link text-black font-medium hover:text-pink-600">Contact</a>
+                <a href="../cart.html" class="relative text-black hover:text-pink-600" aria-label="Cart">
+                    <i class="fas fa-shopping-bag text-xl"></i>
+                    <span id="cartCount" class="absolute -top-2 -right-2 bg-pink-500 text-white text-xs rounded-full min-w-[1.25rem] h-5 px-1 flex items-center justify-center">0</span>
+                </a>
+            </div>
+
+            <button id="tcMobileButton" class="md:hidden text-gray-700 hover:text-pink-600" aria-label="Toggle menu" type="button">
+                <i class="fas fa-bars text-2xl"></i>
+            </button>
+        </nav>
+
+        <div id="tcMobileMenu" class="md:hidden hidden bg-white border-t border-gray-200">
+            <div class="container mx-auto px-6 py-4">
+                <a href="../index.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Home</a>
+                <a href="../sale.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Sale</a>
+
+                <div class="py-3 border-b border-gray-100">
+                    <button type="button" class="w-full flex justify-between items-center text-gray-800 hover:text-pink-600" data-tc-sub="Summers">
+                        <span>Summers</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="mt-2 pl-4 hidden" data-tc-submenu="Summers">
+                        <a href="../Summers/Alif.html" class="block py-2 text-gray-700 hover:text-pink-600">Alif</a>
+                        <a href="../Summers/Asifa Nabeel.html" class="block py-2 text-gray-700 hover:text-pink-600">Asifa Nabeel</a>
+                        <a href="../Summers/Bareeze.html" class="block py-2 text-gray-700 hover:text-pink-600">Bareeze</a>
+                        <a href="../Summers/crimson.html" class="block py-2 text-gray-700 hover:text-pink-600">Crimson</a>
+                        <a href="../Summers/Sufusse.html" class="block py-2 text-gray-700 hover:text-pink-600">Sufusse</a>
+                        <a href="../Summers/Afrozeh.html" class="block py-2 text-gray-700 hover:text-pink-600">Afrozeh</a>
+                        <a href="../Summers/Maria.B.html" class="block py-2 text-gray-700 hover:text-pink-600">Maria B</a>
+                        <a href="../Summers/Mushq.html" class="block py-2 text-gray-700 hover:text-pink-600">Mushq</a>
+                        <a href="../Summers/Nishat.html" class="block py-2 text-gray-700 hover:text-pink-600">Nishat</a>
+                        <a href="../Summers/Noor by SAdia Asad.html" class="block py-2 text-gray-700 hover:text-pink-600">Noor by Sadia Asad</a>
+                        <a href="../Summers/Sana Safinaz.html" class="block py-2 text-gray-700 hover:text-pink-600">Sana Safinaz</a>
+                        <a href="../Summers/Sapphire.html" class="block py-2 text-gray-700 hover:text-pink-600">Sapphire</a>
+                        <a href="../Summers/Zara Shajahan.html" class="block py-2 text-gray-700 hover:text-pink-600">Zara Shajahan</a>
+                    </div>
+                </div>
+
+                <div class="py-3 border-b border-gray-100">
+                    <button type="button" class="w-full flex justify-between items-center text-gray-800 hover:text-pink-600" data-tc-sub="Winters">
+                        <span>Winters</span>
+                        <i class="fas fa-chevron-down text-xs"></i>
+                    </button>
+                    <div class="mt-2 pl-4 hidden" data-tc-submenu="Winters">
+                        <a href="../winters/Pure Pashmina.html" class="block py-2 text-gray-700 hover:text-pink-600">Pure Pashmina</a>
+                        <a href="../winters/Pashmina Kani.html" class="block py-2 text-gray-700 hover:text-pink-600">Pashmina Kani</a>
+                        <a href="../winters/Shawls.html" class="block py-2 text-gray-700 hover:text-pink-600">Shawls</a>
+                        <a href="../winters/Kami Silk Shawls.html" class="block py-2 text-gray-700 hover:text-pink-600">Kami Silk Shawls</a>
+                    </div>
+                </div>
+
+                <a href="../Mix Brand.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Mix Brands</a>
+                <a href="../Festival Collection.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Festival Collection</a>
+                <a href="../contact.html" class="block py-3 border-b border-gray-100 text-gray-800 hover:text-pink-600">Contact</a>
+                <a href="../cart.html" class="block py-3 text-gray-800 hover:text-pink-600">Cart <span class="ml-2 bg-pink-500 text-white text-xs rounded-full px-2 py-1" data-tc-cart-inline>0</span></a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    
+    <!-- Main Content -->
+    <main class="container mx-auto px-4 py-8">
+        <!-- Breadcrumbs -->
+        <div class="text-sm text-gray-600 mb-8">
+            <a href="../index.html" class="hover:text-pink-600">Home</a> 
+            <span class="mx-2">/</span> 
+            <a href="#" class="text-pink-600">Shawls</a>
+        </div>
+        
+        <!-- Page Header -->
+        <div class="text-center mb-12">
+            <h1 class="font-elegant text-4xl font-bold mb-4">Shawls Collection</h1>
+            <p class="text-gray-600 max-w-2xl mx-auto">Discover our exclusive collection of Shawls, crafted with premium materials and exceptional attention to detail.</p>
+        </div>
+        
+        <!-- Products Grid -->
+        <div class="product-grid">
+            <!-- Product cards will be dynamically loaded here -->
+            <div class="text-center py-12">
+                <p class="text-gray-500">Products coming soon. Check back later!</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-50 border-t border-gray-200 mt-16">
+        <div class="container mx-auto px-6 py-12">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="font-elegant text-xl font-bold mb-4">Trendy Corner</h3>
+                    <p class="text-gray-600 mb-4">Your one-stop destination for the latest fashion trends and styles.</p>
+                    <div class="flex space-x-4">
+                        <a href="#" class="text-gray-500 hover:text-pink-600"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-pink-600"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="text-gray-500 hover:text-pink-600"><i class="fab fa-pinterest-p"></i></a>
+                    </div>
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-4">Shop</h4>
+                    <ul class="space-y-2">
+                        <li><a href="../sale.html" class="text-gray-600 hover:text-pink-600">Sale</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600">New Arrivals</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600">Bestsellers</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600">Trending Now</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-4">Customer Service</h4>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600">Contact Us</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600">FAQs</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600">Shipping & Returns</a></li>
+                        <li><a href="#" class="text-gray-600 hover:text-pink-600">Size Guide</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="font-medium text-gray-900 mb-4">Newsletter</h4>
+                    <p class="text-gray-600 mb-4">Subscribe to get updates on new arrivals and special offers.</p>
+                    <div class="flex">
+                        <input type="email" placeholder="Your email address" class="px-4 py-2 border border-r-0 rounded-l-md focus:outline-none focus:ring-2 focus:ring-pink-500 w-full">
+                        <button class="bg-pink-600 text-white px-4 py-2 rounded-r-md hover:bg-pink-700 focus:outline-none">
+                            <i class="fas fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-200 mt-12 pt-8 flex flex-col md:flex-row justify-between items-center">
+                <p class="text-gray-500 text-sm">&copy; 2025 Trendy Corner. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="text-gray-500 hover:text-pink-600 text-sm">Privacy Policy</a>
+                    <a href="#" class="text-gray-500 hover:text-pink-600 text-sm">Terms of Service</a>
+                    <a href="#" class="text-gray-500 hover:text-pink-600 text-sm">Shipping Policy</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Product Modal -->
+    <div id="productModal" class="product-modal">
+        <div class="modal-content">
+            <button class="modal-close" onclick="closeProductModal()">&times;</button>
+            
+            <div class="modal-images" id="modalImagesContainer">
+                <!-- Images will be dynamically added here -->
+            </div>
+            
+            <div class="modal-details">
+                <h2 id="modalProductName"></h2>
+                <div class="modal-price" id="modalProductPrice"></div>
+                <div class="modal-description">
+                    <p>Premium quality fabric with exquisite craftsmanship. Perfect for any occasion, this piece combines traditional elegance with modern style.</p>
+                    <ul class="mt-4 space-y-2 text-gray-600">
+                        <li>✓ High-quality fabric</li>
+                        <li>✓ Elegant design</li>
+                        <li>✓ Perfect fit</li>
+                        <li>✓ Easy to maintain</li>
+                    </ul>
+                </div>
+                <button class="modal-add-cart" onclick="addToCartFromModal()">
+                    <i class="fas fa-shopping-cart mr-2"></i>ADD TO CART
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+(function(){
+  if (window.__tcNavInit) return;
+  window.__tcNavInit = true;
+
+  function readCart(){
+    try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch(e){ return []; }
+  }
+
+  function cartCount(cart){
+    return cart.reduce((t, it) => {
+      const q = Number(it.quantity ?? it.qty ?? 1);
+      return t + (Number.isFinite(q) ? q : 1);
+    }, 0);
+  }
+
+  function updateCartUI(){
+    const c = cartCount(readCart());
+    const badge = document.getElementById('cartCount');
+    if (badge) {
+      badge.textContent = String(c);
+      badge.style.display = c > 0 ? 'flex' : 'none';
+    }
+    document.querySelectorAll('[data-tc-cart-inline]').forEach(el => {
+      el.textContent = String(c);
+      el.style.display = c > 0 ? 'inline-block' : 'none';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const btn = document.getElementById('tcMobileButton');
+    const menu = document.getElementById('tcMobileMenu');
+
+    function closeMenu(){
+      if (!menu) return;
+      menu.classList.add('hidden');
+    }
+
+    function toggleMenu(){
+      if (!menu) return;
+      menu.classList.toggle('hidden');
+    }
+
+    if (btn && menu) {
+      btn.addEventListener('click', function(e){ e.stopPropagation(); toggleMenu(); });
+      document.addEventListener('click', function(e){
+        if (!menu) return;
+        if (menu.classList.contains('hidden')) return;
+        if (!menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
+      });
+    }
+
+    document.querySelectorAll('[data-tc-sub]').forEach(function(b){
+      b.addEventListener('click', function(){
+        const key = b.getAttribute('data-tc-sub');
+        const sub = document.querySelector('[data-tc-submenu="' + key + '"]');
+        if (!sub) return;
+        sub.classList.toggle('hidden');
+        const icon = b.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-chevron-down');
+          icon.classList.toggle('fa-chevron-up');
+        }
+      });
+    });
+
+    updateCartUI();
+    window.addEventListener('storage', function(e){ if (e.key === 'cart') updateCartUI(); });
+  });
+})();
+</script>
+</body>
+</html>
