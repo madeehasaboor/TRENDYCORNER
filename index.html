@@ -457,5 +457,78 @@ document.addEventListener('DOMContentLoaded', function() {
   updateCartCount();
 });
 </script>
+
+<script>
+// Navigation functionality for mobile menu
+(function(){
+  if (window.__tcNavInit) return;
+  window.__tcNavInit = true;
+
+  function readCart(){
+    try { return JSON.parse(localStorage.getItem('cart') || '[]'); } catch(e){ return []; }
+  }
+
+  function cartCount(cart){
+    return cart.reduce((t, it) => {
+      const q = Number(it.quantity ?? it.qty ?? 1);
+      return t + (Number.isFinite(q) ? q : 1);
+    }, 0);
+  }
+
+  function updateCartUI(){
+    const c = cartCount(readCart());
+    const badge = document.getElementById('cartCount');
+    if (badge) {
+      badge.textContent = String(c);
+      badge.style.display = c > 0 ? 'flex' : 'none';
+    }
+    document.querySelectorAll('[data-tc-cart-inline]').forEach(el => {
+      el.textContent = String(c);
+      el.style.display = c > 0 ? 'inline-block' : 'none';
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', function(){
+    const btn = document.getElementById('tcMobileButton');
+    const menu = document.getElementById('tcMobileMenu');
+
+    function closeMenu(){
+      if (!menu) return;
+      menu.classList.add('hidden');
+    }
+
+    function toggleMenu(){
+      if (!menu) return;
+      menu.classList.toggle('hidden');
+    }
+
+    if (btn && menu) {
+      btn.addEventListener('click', function(e){ e.stopPropagation(); toggleMenu(); });
+      document.addEventListener('click', function(e){
+        if (!menu) return;
+        if (menu.classList.contains('hidden')) return;
+        if (!menu.contains(e.target) && !btn.contains(e.target)) closeMenu();
+      });
+    }
+
+    document.querySelectorAll('[data-tc-sub]').forEach(function(b){
+      b.addEventListener('click', function(){
+        const key = b.getAttribute('data-tc-sub');
+        const sub = document.querySelector('[data-tc-submenu="' + key + '"]');
+        if (!sub) return;
+        sub.classList.toggle('hidden');
+        const icon = b.querySelector('i');
+        if (icon) {
+          icon.classList.toggle('fa-chevron-down');
+          icon.classList.toggle('fa-chevron-up');
+        }
+      });
+    });
+
+    updateCartUI();
+    window.addEventListener('storage', function(e){ if (e.key === 'cart') updateCartUI(); });
+  });
+})();
+</script>
 </body>
 </html>
