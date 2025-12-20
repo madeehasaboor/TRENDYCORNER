@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        .header {
+            background-color: #007bff;
+            color: white;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 1.5rem;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .btn {
+            background-color: #fff;
+            color: #007bff;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+        
+        .btn:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+        
+        .btn-success {
+            background-color: #28a745;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background-color: #218838;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .search-bar {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .search-bar select {
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .products-table {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th, td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        th {
+            background-color: #f8f9fa;
+            font-weight: 600;
+        }
+        
+        tr:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+        
+        .btn-sm {
+            padding: 0.25rem 0.5rem;
+            font-size: 0.8rem;
+        }
+        
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 1rem;
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 2rem;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 600px;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: black;
+        }
+        
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: bold;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        
+        .form-group textarea {
+            height: 80px;
+            resize: vertical;
+        }
+        
+        .message {
+            padding: 0.75rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+        }
+
+        .form-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            max-width: 600px;
+        }
+
+        .section {
+            animation: fadeIn 0.3s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Admin Dashboard</h1>
+        <div class="nav-buttons">
+            <button onclick="showSection('products')" class="btn" id="productsBtn">Products</button>
+            <button onclick="showSection('add-product')" class="btn" id="addProductBtn">Add Product</button>
+            <a href="#" onclick="logout()" class="btn btn-danger">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div id="message" class="message"></div>
+        
+        <!-- Products Section -->
+        <div id="products-section" class="section">
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Search products...">
+                <select id="categoryFilter">
+                    <option value="">All Categories</option>
+                </select>
+                <button onclick="searchProducts()" class="btn">Search</button>
+                <button onclick="loadProducts()" class="btn">Reset</button>
+            </div>
+
+            <div class="products-table">
+                <table id="productsTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Stock</th>
+                            <th>Brand</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="productsBody">
+                        <tr>
+                            <td colspan="7" class="loading">Loading products...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="pagination" id="pagination">
+                <!-- Pagination will be generated dynamically -->
+            </div>
+        </div>
+
+        <!-- Add Product Section -->
+        <div id="add-product-section" class="section" style="display: none;">
+            <div class="form-container">
+                <h2>Add New Product</h2>
+                <form id="addProductForm" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="addName">Product Name:</label>
+                        <input type="text" id="addName" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addPrice">Price:</label>
+                        <input type="number" id="addPrice" name="price" step="0.01" min="0" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addStock">Stock:</label>
+                        <input type="number" id="addStock" name="stock" min="0" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addBrand">Brand:</label>
+                        <select id="addBrand" name="brand_id" required>
+                            <option value="">Select Brand</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addCategory">Category:</label>
+                        <select id="addCategory" name="category_id" required>
+                            <option value="">Select Category</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="addSubcategory">Subcategory:</label>
+                        <select id="addSubcategory" name="subcategory_id" required>
+                            <option value="">Select Subcategory</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="addImage">Image:</label>
+                        <input type="file" id="addImage" name="image" accept="image/*" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-success">Add Product</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Product Modal -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Product</h2>
+            <form id="editForm">
+                <input type="hidden" id="editId">
+                
+                <div class="form-group">
+                    <label for="editName">Product Name:</label>
+                    <input type="text" id="editName" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editPrice">Price:</label>
+                    <input type="number" id="editPrice" step="0.01" min="0" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editDescription">Description:</label>
+                    <textarea id="editDescription"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="editBrand">Brand:</label>
+                    <select id="editBrand" required>
+                        <option value="">Select Brand</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editCategory">Category:</label>
+                    <select id="editCategory" required>
+                        <option value="">Select Category</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="editSubcategory">Subcategory:</label>
+                    <select id="editSubcategory" required>
+                        <option value="">Select Subcategory</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="editImage">Image URL:</label>
+                    <input type="text" id="editImage">
+                </div>
+                
+                <div class="form-group">
+                    <label for="editStock">Stock:</label>
+                    <input type="number" id="editStock" min="0">
+                </div>
+
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn-success">Update Product</button>
+                    <button type="button" onclick="closeEditModal()" class="btn">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:4000/api';
+        let currentPage = 1;
+        let totalPages = 1;
+
+        // Get token from localStorage
+        function getToken() {
+            return localStorage.getItem('token');
+        }
+
+        // Show/Hide sections
+        function showSection(section) {
+            const productsSection = document.getElementById('products-section');
+            const addProductSection = document.getElementById('add-product-section');
+            const productsBtn = document.getElementById('productsBtn');
+            const addProductBtn = document.getElementById('addProductBtn');
+
+            if (section === 'products') {
+                productsSection.style.display = 'block';
+                addProductSection.style.display = 'none';
+                productsBtn.style.backgroundColor = '#007bff';
+                productsBtn.style.color = 'white';
+                addProductBtn.style.backgroundColor = '#fff';
+                addProductBtn.style.color = '#007bff';
+            } else if (section === 'add-product') {
+                productsSection.style.display = 'none';
+                addProductSection.style.display = 'block';
+                productsBtn.style.backgroundColor = '#fff';
+                productsBtn.style.color = '#007bff';
+                addProductBtn.style.backgroundColor = '#007bff';
+                addProductBtn.style.color = 'white';
+                
+                // Load dropdowns for add product form
+                loadAddProductDropdowns();
+            }
+        }
+
+        // Load dropdowns for add product form
+        async function loadAddProductDropdowns() {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                // Load brands
+                const brandsResponse = await fetch(`${API_BASE}/brands`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const brandsData = await brandsResponse.json();
+                const brandSelect = document.getElementById('addBrand');
+                brandSelect.innerHTML = '<option value="">Select Brand</option>';
+                brandsData.data.forEach(brand => {
+                    brandSelect.innerHTML += `<option value="${brand.id}">${brand.name}</option>`;
+                });
+
+                // Load categories
+                const categoriesResponse = await fetch(`${API_BASE}/categories`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const categoriesData = await categoriesResponse.json();
+                const categorySelect = document.getElementById('addCategory');
+                categorySelect.innerHTML = '<option value="">Select Category</option>';
+                categoriesData.data.forEach(category => {
+                    categorySelect.innerHTML += `<option value="${category.id}">${category.name}</option>`;
+                });
+
+                // Load subcategories
+                const subcategoriesResponse = await fetch(`${API_BASE}/subcategories`, {
+                    headers: { Authorization: `Bearer ${token}` }
+                });
+                const subcategoriesData = await subcategoriesResponse.json();
+                updateSubcategories(subcategoriesData.data);
+            } catch (error) {
+                console.error('Error loading dropdowns:', error);
+                showMessage('Error loading dropdown options', 'error');
+            }
+        }
+
+        // Update subcategories based on selected category
+        function updateSubcategories(subcategories) {
+            const categorySelect = document.getElementById('addCategory');
+            const subcategorySelect = document.getElementById('addSubcategory');
+            
+            categorySelect.addEventListener('change', () => {
+                const selectedCategoryId = categorySelect.value;
+                subcategorySelect.innerHTML = '<option value="">Select Subcategory</option>';
+                
+                subcategories.forEach(subcategory => {
+                    if (subcategory.category_id == selectedCategoryId) {
+                        subcategorySelect.innerHTML += `<option value="${subcategory.id}">${subcategory.name}</option>`;
+                    }
+                });
+            });
+        }
+
+        // Handle add product form submission
+        document.getElementById('addProductForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const token = checkAuth();
+            if (!token) return;
+
+            const formData = new FormData(e.target);
+            
+            try {
+                const response = await fetch(`${API_BASE}/products/add`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+                
+                if (data.message === "Product Added") {
+                    showMessage('Product added successfully!', 'success');
+                    e.target.reset();
+                    // Switch back to products section
+                    showSection('products');
+                    loadProducts();
+                } else {
+                    showMessage('Error: ' + (data.message || "Unknown error"), 'error');
+                }
+            } catch (error) {
+                console.error('Error adding product:', error);
+                showMessage('Network error. Please try again.', 'error');
+            }
+        });
+
+        // Check authentication
+        function checkAuth() {
+            const token = getToken();
+            if (!token) {
+                alert('Please login first!');
+                window.location.href = 'admin-login.html';
+                return false;
+            }
+            return token;
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            
+            setTimeout(() => {
+                messageDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Load products
+        async function loadProducts(page = 1, search = '', category = '') {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                let url = `${API_BASE}/products?page=${page}&limit=10`;
+                if (search) url += `&search=${encodeURIComponent(search)}`;
+                if (category) url += `&category=${category}`;
+
+                const response = await fetch(url, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayProducts(data.data);
+                    updatePagination(data.pagination);
+                    currentPage = data.pagination.page;
+                    totalPages = data.pagination.pages;
+                } else {
+                    showMessage('Failed to load products', 'error');
+                }
+            } catch (error) {
+                console.error('Load products error:', error);
+                showMessage('Network error loading products', 'error');
+            }
+        }
+
+        // Display products in table
+        function displayProducts(products) {
+            const tbody = document.getElementById('productsBody');
+            
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">No products found</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = products.map(product => `
+                <tr>
+                    <td>${product.id}</td>
+                    <td>${product.name}</td>
+                    <td>$${parseFloat(product.price).toFixed(2)}</td>
+                    <td>${product.stock || 0}</td>
+                    <td>${product.brand_name || 'N/A'}</td>
+                    <td>${product.category_name || 'N/A'}</td>
+                    <td>
+                        <div class="actions">
+                            <button onclick="editProduct(${product.id})" class="btn btn-sm">Edit</button>
+                            <button onclick="deleteProduct(${product.id})" class="btn btn-danger btn-sm">Delete</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Update pagination
+        function updatePagination(pagination) {
+            const paginationDiv = document.getElementById('pagination');
+            
+            if (pagination.pages <= 1) {
+                paginationDiv.innerHTML = '';
+                return;
+            }
+
+            let html = '';
+            
+            // Previous button
+            if (pagination.page > 1) {
+                html += `<button onclick="loadProducts(${pagination.page - 1})" class="btn btn-sm">Previous</button>`;
+            }
+            
+            // Page numbers
+            for (let i = 1; i <= pagination.pages; i++) {
+                if (i === pagination.page) {
+                    html += `<span style="padding: 0.5rem;">${i}</span>`;
+                } else {
+                    html += `<button onclick="loadProducts(${i})" class="btn btn-sm">${i}</button>`;
+                }
+            }
+            
+            // Next button
+            if (pagination.page < pagination.pages) {
+                html += `<button onclick="loadProducts(${pagination.page + 1})" class="btn btn-sm">Next</button>`;
+            }
+            
+            paginationDiv.innerHTML = html;
+        }
+
+        // Search products
+        function searchProducts() {
+            const search = document.getElementById('searchInput').value;
+            const category = document.getElementById('categoryFilter').value;
+            loadProducts(1, search, category);
+        }
+
+        // Load categories for filter
+        async function loadCategories() {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                const response = await fetch(`${API_BASE}/categories`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const select = document.getElementById('categoryFilter');
+                    select.innerHTML = '<option value="">All Categories</option>';
+                    
+                    data.data.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Load categories error:', error);
+            }
+        }
+
+        // Edit product
+        async function editProduct(id) {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                const response = await fetch(`${API_BASE}/products/${id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const product = data.data;
+                    document.getElementById('editId').value = product.id;
+                    document.getElementById('editName').value = product.name;
+                    document.getElementById('editPrice').value = product.price;
+                    document.getElementById('editDescription').value = product.description || '';
+                    document.getElementById('editImage').value = product.image || '';
+                    document.getElementById('editStock').value = product.stock || 0;
+
+                    // Load brands and categories for dropdowns
+                    await loadBrandsForEdit();
+                    await loadCategoriesForEdit();
+                    
+                    // Set selected values
+                    document.getElementById('editBrand').value = product.brand_id || '';
+                    document.getElementById('editCategory').value = product.category_id || '';
+                    
+                    // Load subcategories for selected category
+                    if (product.category_id) {
+                        await loadSubcategoriesForEdit(product.category_id);
+                        document.getElementById('editSubcategory').value = product.subcategory_id || '';
+                    }
+
+                    document.getElementById('editModal').style.display = 'block';
+                } else {
+                    showMessage('Failed to load product details', 'error');
+                }
+            } catch (error) {
+                console.error('Edit product error:', error);
+                showMessage('Network error loading product', 'error');
+            }
+        }
+
+        // Load brands for edit dropdown
+        async function loadBrandsForEdit() {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                const response = await fetch(`${API_BASE}/brands`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const select = document.getElementById('editBrand');
+                    select.innerHTML = '<option value="">Select Brand</option>';
+                    
+                    data.data.forEach(brand => {
+                        const option = document.createElement('option');
+                        option.value = brand.id;
+                        option.textContent = brand.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Load brands error:', error);
+            }
+        }
+
+        // Load categories for edit dropdown
+        async function loadCategoriesForEdit() {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                const response = await fetch(`${API_BASE}/categories`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const select = document.getElementById('editCategory');
+                    select.innerHTML = '<option value="">Select Category</option>';
+                    
+                    data.data.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.id;
+                        option.textContent = category.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Load categories error:', error);
+            }
+        }
+
+        // Load subcategories for edit dropdown
+        async function loadSubcategoriesForEdit(categoryId) {
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                const response = await fetch(`${API_BASE}/subcategories?category_id=${categoryId}`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    const select = document.getElementById('editSubcategory');
+                    select.innerHTML = '<option value="">Select Subcategory</option>';
+                    
+                    data.data.forEach(subcategory => {
+                        const option = document.createElement('option');
+                        option.value = subcategory.id;
+                        option.textContent = subcategory.name;
+                        select.appendChild(option);
+                    });
+                }
+            } catch (error) {
+                console.error('Load subcategories error:', error);
+            }
+        }
+
+        // Handle category change in edit form
+        document.getElementById('editCategory').addEventListener('change', (e) => {
+            const categoryId = e.target.value;
+            if (categoryId) {
+                loadSubcategoriesForEdit(categoryId);
+            } else {
+                document.getElementById('editSubcategory').innerHTML = '<option value="">Select Subcategory</option>';
+            }
+        });
+
+        // Handle edit form submission
+        document.getElementById('editForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = checkAuth();
+            if (!token) return;
+
+            const id = document.getElementById('editId').value;
+            const data = {
+                name: document.getElementById('editName').value,
+                price: parseFloat(document.getElementById('editPrice').value),
+                description: document.getElementById('editDescription').value,
+                brand_id: parseInt(document.getElementById('editBrand').value),
+                category_id: parseInt(document.getElementById('editCategory').value),
+                subcategory_id: parseInt(document.getElementById('editSubcategory').value),
+                image: document.getElementById('editImage').value,
+                stock: parseInt(document.getElementById('editStock').value) || 0
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/products/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Product updated successfully!', 'success');
+                    closeEditModal();
+                    loadProducts(currentPage);
+                } else {
+                    showMessage(result.message || 'Failed to update product', 'error');
+                }
+            } catch (error) {
+                console.error('Update product error:', error);
+                showMessage('Network error updating product', 'error');
+            }
+        });
+
+        // Delete product
+        async function deleteProduct(id) {
+            if (!confirm('Are you sure you want to delete this product?')) {
+                return;
+            }
+
+            try {
+                const token = checkAuth();
+                if (!token) return;
+
+                const response = await fetch(`${API_BASE}/products/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (result.success) {
+                    showMessage('Product deleted successfully!', 'success');
+                    loadProducts(currentPage);
+                } else {
+                    showMessage(result.message || 'Failed to delete product', 'error');
+                }
+            } catch (error) {
+                console.error('Delete product error:', error);
+                showMessage('Network error deleting product', 'error');
+            }
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = 'admin-login.html';
+        }
+
+        // Initialize
+        window.addEventListener('load', () => {
+            checkAuth();
+            loadProducts();
+            loadCategories();
+        });
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin Dashboard - Trendy Corner</title>
+<style>
+body { font-family: Arial, sans-serif; margin: 20px; background: #f4f4f4; }
+h2 { color: #333; }
+form, table { background: #fff; padding: 20px; margin-bottom: 30px; border-radius: 8px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+input, select, button { padding: 8px; margin: 5px 0; width: 100%; max-width: 400px; }
+button { cursor: pointer; border: none; border-radius: 5px; }
+button.add { background: #007bff; color: #fff; }
+button.edit { background: #28a745; color: #fff; }
+button.delete { background: #dc3545; color: #fff; }
+table { width: 100%; border-collapse: collapse; }
+th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
+img { max-width: 80px; max-height: 80px; }
+.tabs { display: flex; gap: 10px; margin-bottom: 10px; }
+.tab { padding: 8px 12px; background: #eee; cursor: pointer; border-radius: 5px; }
+.tab.active { background: #007bff; color: #fff; }
+</style>
+</head>
+<body>
+
+<h2>Add Product</h2>
+<form id="addProductForm" enctype="multipart/form-data">
+  <label for="name">Product Name:</label>
+  <input type="text" id="name" name="name" required>
+
+  <label for="price">Price:</label>
+  <input type="number" id="price" name="price" required>
+
+  <label>Category:</label>
+  <div class="tabs">
+    <div class="tab active" data-category="Summer">Summer</div>
+    <div class="tab" data-category="Winter">Winter</div>
+    <div class="tab" data-category="Sale">Sale</div>
+    <div class="tab" data-category="Festive Collection">Festive Collection</div>
+  </div>
+
+  <label for="brand">Brand / Subcategory:</label>
+  <select id="brand" name="brand" required></select>
+
+  <label for="image">Image:</label>
+  <input type="file" id="image" name="image" accept="image/*" required>
+
+  <button type="submit" class="add">Add Product</button>
+</form>
+
+<h2>Products List</h2>
+<table id="productsTable">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Price</th>
+      <th>Category</th>
+      <th>Brand / Subcategory</th>
+      <th>Image</th>
+      <th>Actions</th>
+    </tr>
+  </thead>
+  <tbody></tbody>
+</table>
+
+<script>
+// Brand/subcategory mapping
+const brandData = {
+  "Summer": ['Nishat','Crimson','Sana Safinaz','Bareeze','Zara Shajahan','Sapphire','Mushq','Maria B','Asifa Nabeel','Alif','Noor by Sadia Asad','Suffuse','Afrozeh','Mix Brands'],
+  "Winter": ['Pure Pashmina','Pashmina Kani','Shawls','Kanni Silk Shawls'],
+  "Sale": [],
+  "Festive Collection": []
+};
+
+let activeCategory = "Summer";
+
+// Render brand dropdown
+function renderBrands() {
+  const brandSelect = document.getElementById("brand");
+  brandSelect.innerHTML = "";
+  brandData[activeCategory].forEach(b => {
+    brandSelect.innerHTML += `<option value="${b}">${b}</option>`;
+  });
+}
+
+// Tab click handling
+document.querySelectorAll(".tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tab.classList.add("active");
+    activeCategory = tab.dataset.category;
+    renderBrands();
+  });
+});
+
+// Initialize brands
+renderBrands();
+
+// Load products
+async function loadProducts() {
+  let res = await fetch("http://localhost:4000/api/products");
+  let products = await res.json();
+  let tbody = document.querySelector("#productsTable tbody");
+  tbody.innerHTML = "";
+  products.forEach(p => {
+    tbody.innerHTML += `
+      <tr data-id="${p.id}">
+        <td>${p.id}</td>
+        <td>${p.name}</td>
+        <td>${p.price}</td>
+        <td>${p.category_name || p.category || ""}</td>
+        <td>${p.subcategory_name || p.brand || ""}</td>
+        <td>${p.image ? `<img src="http://localhost:4000/uploads/${p.image}" />` : ""}</td>
+        <td>
+          <button class="edit" onclick="editProduct(${p.id})">Edit</button>
+          <button class="delete" onclick="deleteProduct(${p.id})">Delete</button>
+        </td>
+      </tr>
+    `;
+  });
+}
+
+// Add Product
+document.getElementById("addProductForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  let formData = new FormData(e.target);
+  formData.append("category", activeCategory); 
+  formData.append("subcategory", document.getElementById("brand").value); 
+  let res = await fetch("http://localhost:4000/api/products/add", {
+    method: "POST",
+    headers: {
+      "Authorization": "Bearer " + localStorage.getItem("token")
+    },
+    body: formData
+  });
+  let data = await res.json();
+  if(data.success){
+    alert("Product added successfully!");
+    e.target.reset();
+    renderBrands();
+    loadProducts();
+  } else {
+    alert("Error: " + data.message);
+  }
+});
+
+// Edit Product
+async function editProduct(id) {
+  let row = document.querySelector(`tr[data-id="${id}"]`);
+  let name = prompt("Enter new product name:", row.children[1].innerText);
+  if(!name) return;
+  let price = prompt("Enter new price:", row.children[2].innerText);
+  if(!price) return;
+
+  let res = await fetch(`http://localhost:4000/api/products/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name, price })
+  });
+  let data = await res.json();
+  if(data.success){
+    alert("Product updated successfully!");
+    loadProducts();
+  } else {
+    alert("Error: " + data.message);
+  }
+}
+
+// Delete Product
+async function deleteProduct(id) {
+  if(!confirm("Are you sure you want to delete this product?")) return;
+  let res = await fetch(`http://localhost:4000/api/products/${id}`, { method: "DELETE" });
+  let data = await res.json();
+  if(data.success){
+    alert("Product deleted successfully!");
+    loadProducts();
+  } else {
+    alert("Error: " + data.message);
+  }
+}
+
+// Initial load
+loadProducts();
+</script>
+
+</body>
+</html>
